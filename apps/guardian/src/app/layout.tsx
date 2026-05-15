@@ -1,4 +1,4 @@
-import './globals.css';
+import '@trana/ui/globals.css';
 
 import type { Metadata } from 'next';
 
