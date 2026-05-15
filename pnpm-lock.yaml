@@ -20,7 +20,7 @@ importers:
 
   apps/guardian:
     dependencies:
-      '@repo/ui':
+      '@trana/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       next:
