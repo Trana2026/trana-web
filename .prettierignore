@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+.turbo
+dist
+build
+out
+coverage
+
+# Lock files
+pnpm-lock.yaml
+
+# Minified
+*.min.js
+*.min.css
+
+# IDE
+.idea
+.vscode
+
+# Local docs (gitignored)
+docs
+
+# Generated
+next-env.d.ts
+.next/types
