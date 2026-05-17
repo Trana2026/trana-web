@@ -10,6 +10,7 @@
     "check-types": "turbo run check-types",
     "prepare": "husky"
   },
+  "preinstall": "npx only-allow pnpm",
   "lint-staged": {
     "apps/guardian/**/*.{ts,tsx,js,jsx}": [
       "prettier --write",
@@ -30,6 +31,7 @@
     "@commitlint/config-conventional": "^21.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
+    "only-allow": "^1.2.2",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "^2.9.12",

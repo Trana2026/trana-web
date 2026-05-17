@@ -1,0 +1,15 @@
+# 모든 텍스트 파일 LF
+* text=auto eol=lf
+
+# 명시적으로 LF 강제
+*.{ts,tsx,js,jsx,mjs,cjs,json,yml,yaml,md,css,html} text eol=lf
+
+# 셸 스크립트 (husky hooks)
+*.sh text eol=lf
+
+# Windows 전용 (있다면)
+*.{cmd,bat,ps1} text eol=crlf
+
+# Binary (git이 텍스트로 처리 안 하게)
+*.{png,jpg,jpeg,gif,ico,svg,webp,woff,woff2,ttf,otf,eot} binary
+*.{pdf,zip,gz} binary
