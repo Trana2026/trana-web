@@ -11,7 +11,19 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,css,md,yml,yaml}": "prettier --write"
+    "apps/guardian/**/*.{ts,tsx,js,jsx}": [
+      "prettier --write",
+      "pnpm --filter guardian exec eslint --fix --max-warnings 0"
+    ],
+    "packages/ui/**/*.{ts,tsx}": [
+      "prettier --write",
+      "pnpm --filter @trana/ui exec eslint --fix --max-warnings 0"
+    ],
+    "packages/eslint-config/**/*.{ts,tsx,js,mjs,cjs}": [
+      "prettier --write",
+      "pnpm --filter @repo/eslint-config exec eslint --fix --max-warnings 0"
+    ],
+    "*.{json,css,md,yml,yaml}": "prettier --write"
   },
   "devDependencies": {
     "husky": "^9.1.7",
