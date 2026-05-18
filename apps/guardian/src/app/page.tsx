@@ -1,12 +1,14 @@
-import { Button } from '@trana/ui/components/button';
+import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="bg-background flex min-h-screen flex-col items-center justify-center gap-4 p-8">
-      <h1 className="text-foreground text-3xl font-bold">Trana Guardian</h1>
-      <p className="text-muted-foreground">보호자 인증 페이지</p>
-      <Button>시작하기</Button>
-      <Button variant="outline">취소</Button>
+    <main className="bg-background flex min-h-dvh items-center justify-center px-5">
+      <Link
+        href="/consent/test-token-123"
+        className="bg-primary text-primary-foreground rounded-button text-body-l-sb inline-flex w-full max-w-[480px] items-center justify-center px-5 py-3.5"
+      >
+        시작하기
+      </Link>
     </main>
   );
 }
