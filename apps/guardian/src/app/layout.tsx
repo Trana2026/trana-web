@@ -1,5 +1,6 @@
 import '@trana/ui/globals.css';
 
+import { ApiProvider } from '@trana/api';
 import type { Metadata, Viewport } from 'next';
 
 export const metadata: Metadata = {
@@ -18,7 +19,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <ApiProvider>{children}</ApiProvider>
+      </body>
     </html>
   );
 }

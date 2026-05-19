@@ -1,53 +1,67 @@
 'use client';
 
+import { ApiError, useAgreeConsent } from '@trana/api';
+import { Checkbox } from '@trana/ui/components/checkbox';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export function TermsForm({ token }: { token: string }) {
+type Props = {
+  token: string;
+  termsVersionIds: number[];
+};
+
+export function TermsForm({ token, termsVersionIds }: Props) {
   const [checked, setChecked] = useState(false);
   const router = useRouter();
+  const agree = useAgreeConsent();
+
+  const handleSubmit = () => {
+    agree.mutate(
+      {
+        termsVersionIds,
+        contextType: 'SIGNUP',
+        ageGroup: 'ADULT',
+        guardianLinkToken: token,
+      },
+      {
+        onSuccess: () => {
+          router.push(`/verify/${token}/id-capture`);
+        },
+        onError: (err) => {
+          if (err instanceof ApiError) {
+            alert(`${err.code}: ${err.message}`);
+          } else {
+            alert('알 수 없는 오류가 발생했어요.');
+          }
+        },
+      },
+    );
+  };
+
+  const disabled = !checked || agree.isPending;
 
   return (
     <div className="flex flex-col gap-3">
-      {/* 동의 체크 row */}
-      <button
-        type="button"
-        onClick={() => setChecked((c) => !c)}
-        className="rounded-button bg-card flex items-center gap-2.5 px-3.5 py-4 text-left"
-      >
-        <span
-          className={`grid h-5 w-5 place-items-center rounded-full transition-colors ${
-            checked ? 'bg-primary' : 'bg-card border border-neutral-200'
-          }`}
-          aria-hidden="true"
-        >
-          {checked && (
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path
-                d="M2.5 6.5L5 9L9.5 3.5"
-                stroke="#FFFFFF"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          )}
-        </span>
+      <label className="rounded-button bg-card flex cursor-pointer items-center gap-2.5 px-3.5 py-4">
+        <Checkbox
+          checked={checked}
+          onCheckedChange={(v) => setChecked(v === true)}
+          className="size-5 rounded-full"
+        />
         <span className="text-body-m-b text-foreground flex-1">모든 약관에 동의합니다.</span>
-      </button>
+      </label>
 
-      {/* CTA 버튼 (체크 상태 따라 활성/비활성) */}
       <button
         type="button"
-        disabled={!checked}
-        onClick={() => router.push(`/verify/${token}/id-capture`)}
+        disabled={disabled}
+        onClick={handleSubmit}
         className={`rounded-button text-body-l-sb w-full px-5 py-3.5 transition-colors ${
-          checked
-            ? 'bg-primary text-primary-foreground'
-            : 'cursor-not-allowed bg-neutral-50 text-neutral-300'
+          disabled
+            ? 'cursor-not-allowed bg-neutral-50 text-neutral-300'
+            : 'bg-primary text-primary-foreground'
         }`}
       >
-        본인 인증 시작하기
+        {agree.isPending ? '전송 중...' : '본인 인증 시작하기'}
       </button>
     </div>
   );
