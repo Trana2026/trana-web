@@ -30,13 +30,13 @@ export default async function PersonalInfoPage({ params }: { params: Promise<{ t
       {/* 하단 버튼 */}
       <div className="mt-auto flex flex-col gap-2.5">
         <Link
-          href={`/consent/${token}/id-capture`}
+          href={`/verify/${token}/id-capture`}
           className="bg-card text-foreground rounded-button text-body-l-sb inline-flex w-full items-center justify-center px-5 py-3.5"
         >
           다시 촬영하기
         </Link>
         <Link
-          href={`/consent/${token}/face-capture`}
+          href={`/verify/${token}/face-capture`}
           className="bg-primary text-primary-foreground rounded-button text-body-l-sb inline-flex w-full items-center justify-center px-5 py-3.5"
         >
           정보 확인 완료

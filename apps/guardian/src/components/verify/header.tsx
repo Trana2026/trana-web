@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 
-import { getConsentRouteInfo } from '@/lib/consent-progress';
+import { getVerifyRouteInfo } from '@/lib/verify-progress';
 
 function BackIcon() {
   return (
@@ -25,10 +25,10 @@ function BackIcon() {
   );
 }
 
-export function ConsentHeader() {
+export function VerifyHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const { percent, hideBack } = getConsentRouteInfo(pathname);
+  const { percent, hideBack } = getVerifyRouteInfo(pathname);
 
   return (
     <header className="bg-background">

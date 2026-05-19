@@ -30,7 +30,7 @@ export default async function IdCapturePage({ params }: { params: Promise<{ toke
 
       {/* 하단 버튼 */}
       <Link
-        href={`/consent/${token}/personal-info`}
+        href={`/verify/${token}/personal-info`}
         className="bg-primary text-primary-foreground rounded-button text-body-l-sb mt-auto inline-flex w-full items-center justify-center px-5 py-3.5"
       >
         촬영하기

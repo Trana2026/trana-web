@@ -40,7 +40,7 @@ export function TermsForm({ token }: { token: string }) {
       <button
         type="button"
         disabled={!checked}
-        onClick={() => router.push(`/consent/${token}/id-capture`)}
+        onClick={() => router.push(`/verify/${token}/id-capture`)}
         className={`rounded-button text-body-l-sb w-full px-5 py-3.5 transition-colors ${
           checked
             ? 'bg-primary text-primary-foreground'

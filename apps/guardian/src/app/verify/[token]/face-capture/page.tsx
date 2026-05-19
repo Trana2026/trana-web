@@ -25,7 +25,7 @@ export default async function FaceCapturePage({ params }: { params: Promise<{ to
       {/* 하단 버튼 */}
       <div className="mt-auto pt-[128px]">
         <Link
-          href={`/consent/${token}/done`}
+          href={`/verify/${token}/done`}
           className="bg-primary text-primary-foreground rounded-button text-body-l-sb mt-auto inline-flex w-full items-center justify-center px-5 py-3.5"
         >
           인증 완료

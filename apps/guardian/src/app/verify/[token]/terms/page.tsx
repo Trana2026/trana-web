@@ -1,4 +1,4 @@
-import { TermsForm } from '@/components/consent/terms-form';
+import { TermsForm } from '@/components/verify/terms-form';
 
 const TERMS_SECTIONS = [
   {

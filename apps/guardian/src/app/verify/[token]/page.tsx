@@ -45,7 +45,7 @@ export default async function ConsentEntryPage({ params }: { params: Promise<{ t
           취소하기
         </Link>
         <Link
-          href={`/consent/${token}/terms`}
+          href={`/verify/${token}/terms`}
           className="bg-primary text-primary-foreground rounded-button text-body-l-sb inline-flex w-full items-center justify-center px-5 py-3.5 transition-colors"
         >
           인증하기
