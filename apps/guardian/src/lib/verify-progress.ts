@@ -5,6 +5,7 @@ type ConsentRouteInfo = {
 
 const PROGRESS_MAP: Array<{ pattern: RegExp } & ConsentRouteInfo> = [
   { pattern: /^\/verify\/[^/]+$/, percent: 0, hideBack: true },
+  { pattern: /^\/verify\/[^/]+\/intro$/, percent: 0, hideBack: false }, // ← 추가
   { pattern: /^\/verify\/[^/]+\/terms$/, percent: 20, hideBack: false },
   { pattern: /^\/verify\/[^/]+\/id-capture$/, percent: 40, hideBack: false },
   { pattern: /^\/verify\/[^/]+\/personal-info$/, percent: 60, hideBack: false },

@@ -39,7 +39,7 @@ export default async function ConsentEntryPage({ params }: { params: Promise<{ t
       {/* 하단: 버튼 */}
       <div className="mt-auto flex flex-col gap-3 pt-22">
         <Link
-          href="/"
+          href={`/verify/${token}`}
           className="bg-secondary text-secondary-foreground rounded-button text-body-l-sb inline-flex w-full items-center justify-center px-5 py-3.5 transition-colors"
         >
           취소하기
