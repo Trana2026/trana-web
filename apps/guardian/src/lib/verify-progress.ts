@@ -4,13 +4,13 @@ type ConsentRouteInfo = {
 };
 
 const PROGRESS_MAP: Array<{ pattern: RegExp } & ConsentRouteInfo> = [
-  { pattern: /^\/verify\/[^/]+$/, percent: 0, hideBack: true },
-  { pattern: /^\/verify\/[^/]+\/intro$/, percent: 0, hideBack: false }, // ← 추가
-  { pattern: /^\/verify\/[^/]+\/terms$/, percent: 20, hideBack: false },
-  { pattern: /^\/verify\/[^/]+\/id-capture$/, percent: 40, hideBack: false },
-  { pattern: /^\/verify\/[^/]+\/personal-info$/, percent: 60, hideBack: false },
-  { pattern: /^\/verify\/[^/]+\/face-capture$/, percent: 80, hideBack: false },
-  { pattern: /^\/verify\/[^/]+\/done$/, percent: 100, hideBack: false },
+  { pattern: /^\/(verify\/[^/]+|demo)$/, percent: 0, hideBack: true },
+  { pattern: /^\/(verify\/[^/]+|demo)\/intro$/, percent: 0, hideBack: true },
+  { pattern: /^\/(verify\/[^/]+|demo)\/terms$/, percent: 20, hideBack: false },
+  { pattern: /^\/(verify\/[^/]+|demo)\/id-capture$/, percent: 40, hideBack: false },
+  { pattern: /^\/(verify\/[^/]+|demo)\/personal-info$/, percent: 60, hideBack: false },
+  { pattern: /^\/(verify\/[^/]+|demo)\/face-capture$/, percent: 80, hideBack: false },
+  { pattern: /^\/(verify\/[^/]+|demo)\/done$/, percent: 100, hideBack: false },
 ];
 
 const FALLBACK: ConsentRouteInfo = { percent: 0, hideBack: true };
