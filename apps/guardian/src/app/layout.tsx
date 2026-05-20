@@ -16,6 +16,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
+  themeColor: '#ffffff', // PWA chrome 색
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
