@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 export default async function DonePage({ params }: { params: Promise<{ token: string }> }) {
   await params;
 
@@ -20,12 +18,14 @@ export default async function DonePage({ params }: { params: Promise<{ token: st
       </div>
 
       <div className="mt-auto pt-[194px]">
-        <Link
-          href="/"
+        <a
+          href="https://trana.kr"
+          target="_blank"
+          rel="noopener noreferrer"
           className="bg-primary text-primary-foreground rounded-button text-body-l-sb inline-flex w-full items-center justify-center px-5 py-3.5"
         >
-          홈으로 이동하기
-        </Link>
+          Trana 더 알아보기
+        </a>
       </div>
     </div>
   );
