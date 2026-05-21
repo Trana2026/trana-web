@@ -9,10 +9,11 @@ type RequestOptions = {
   query?: Record<string, string | number | undefined>;
   headers?: HeadersInit;
   signal?: AbortSignal;
+  responseType?: 'json' | 'blob';
 };
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { method = 'GET', body, query, headers, signal } = options;
+  const { method = 'GET', body, query, headers, signal, responseType } = options;
 
   const url = new URL(path, BASE_URL);
   if (query) {
@@ -61,5 +62,8 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
     return undefined as T;
   }
 
+  if (responseType === 'blob') {
+    return (await res.blob()) as T;
+  }
   return (await res.json()) as T;
 }

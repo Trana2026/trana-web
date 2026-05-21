@@ -51,10 +51,16 @@ export function FaceCaptureForm({ token }: { token: string }) {
         },
         onError: (err) => {
           if (err instanceof ApiError) {
-            alert(`${err.code}: ${err.problem.detail}`);
-          } else {
-            alert('알 수 없는 오류가 발생했어요.');
+            alert(err.problem.detail);
+            if (err.problem.hint === 'RETRY_PHOTO') {
+              // compare 실패는 신분증보다는 셀카 문제 가능성 높음 → 현재 페이지에서 재촬영
+              setCameraError(null);
+              // Webcam 컴포넌트 재마운트 위해 페이지 자체 refresh 가 가장 단순
+              router.refresh();
+            }
+            return;
           }
+          alert('알 수 없는 오류가 발생했어요.');
         },
       },
     );

@@ -27,7 +27,7 @@ export default function IntroDemoPage() {
           </GuideCard>
 
           <GuideCard title="인증 전에 준비해 주세요">
-            법정대리인 본인의 신분증(주민등록증/운전면허증/여권 중 1) <br />
+            법정대리인 본인의 신분증(주민등록증/운전면허증/외국인등록증 중 1) <br />
             밝은 곳에서 촬영할 수 있는 환경 <br />
             마스크/모자/선글라스는 얼굴 인증 전에 벗어 주세요.
           </GuideCard>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { LoadingModal } from '@/components/loading-modal';
 
@@ -13,6 +13,12 @@ const MOCK_OCR = {
 export default function PersonalInfoDemoPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [imageReady, setImageReady] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setImageReady(true), 1500);
+    return () => clearTimeout(t);
+  }, []);
 
   const handleRetake = () => {
     router.push('/demo/id-capture');
@@ -41,12 +47,22 @@ export default function PersonalInfoDemoPage() {
         </p>
       </div>
 
+      <div className="bg-card rounded-button mt-3 flex aspect-[1.6/1] w-full items-center justify-center overflow-hidden">
+        {imageReady ? (
+          <div className="flex h-full w-full items-center justify-center bg-neutral-200">
+            <span className="text-caption-m text-muted-foreground">신분증 이미지 (데모)</span>
+          </div>
+        ) : (
+          <span className="text-caption-m text-muted-foreground">이미지 불러오는 중…</span>
+        )}
+      </div>
+
       <div className="mt-[22px] flex flex-col gap-2">
         <Field id="name" label="이름" value={MOCK_OCR.name} />
         <Field id="birth" label="생년월일" value={MOCK_OCR.birthDate} />
       </div>
 
-      <div className="mt-auto flex flex-col gap-2.5">
+      <div className="mt-auto flex flex-col gap-2.5 pt-8">
         <button
           type="button"
           onClick={handleRetake}
@@ -58,7 +74,7 @@ export default function PersonalInfoDemoPage() {
         <button
           type="button"
           onClick={handleConfirm}
-          disabled={loading}
+          disabled={loading || !imageReady}
           className="bg-primary text-primary-foreground rounded-button text-body-l-sb inline-flex w-full items-center justify-center px-5 py-3.5 disabled:opacity-50"
         >
           정보 확인 완료

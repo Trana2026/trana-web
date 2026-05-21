@@ -22,10 +22,15 @@ export type {
   TermsItem,
   TermsType,
 } from './endpoints/terms';
-export { ApiError, type ProblemDetail } from './types';
+export { ApiError, type ErrorHint, type ProblemDetail } from './types';
 
 // Hooks
-export { useGuardianCompare, useGuardianOcr, useGuardianVerify } from './hooks/guardian';
+export {
+  useGuardianCompare,
+  useGuardianIdCardImage,
+  useGuardianOcr,
+  useGuardianVerify,
+} from './hooks/guardian';
 export { termsKeys, useAgreeConsent, useTermsList } from './hooks/terms';
 
 // Provider
