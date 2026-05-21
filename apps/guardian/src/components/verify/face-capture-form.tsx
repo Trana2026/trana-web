@@ -20,6 +20,7 @@ export function FaceCaptureForm({ token }: { token: string }) {
   const requestId = useKycStore((s) => s.requestId);
   const compare = useGuardianCompare();
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   // requestId 없으면 처음부터
   useEffect(() => {
@@ -50,14 +51,9 @@ export function FaceCaptureForm({ token }: { token: string }) {
           router.push(`/verify/${token}/done`);
         },
         onError: (err) => {
+          setRetryKey((k) => k + 1); // 카메라 재마운트
           if (err instanceof ApiError) {
             alert(err.problem.detail);
-            if (err.problem.hint === 'RETRY_PHOTO') {
-              // compare 실패는 신분증보다는 셀카 문제 가능성 높음 → 현재 페이지에서 재촬영
-              setCameraError(null);
-              // Webcam 컴포넌트 재마운트 위해 페이지 자체 refresh 가 가장 단순
-              router.refresh();
-            }
             return;
           }
           alert('알 수 없는 오류가 발생했어요.');
@@ -82,6 +78,7 @@ export function FaceCaptureForm({ token }: { token: string }) {
           </div>
         ) : (
           <Webcam
+            key={retryKey}
             ref={webcamRef}
             audio={false}
             screenshotFormat="image/jpeg"
