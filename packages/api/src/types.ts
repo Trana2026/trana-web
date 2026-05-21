@@ -1,3 +1,5 @@
+export type ErrorHint = 'RETRY_PHOTO' | 'CONTACT_SUPPORT';
+
 export type ProblemDetail = {
   type: string;
   title: string;
@@ -6,6 +8,9 @@ export type ProblemDetail = {
   code: string;
   timestamp: string;
   errors?: unknown;
+  hint?: ErrorHint;
+  ncpCode?: string;
+  ncpMessage?: string;
 };
 
 export class ApiError extends Error {

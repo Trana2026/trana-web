@@ -20,6 +20,7 @@ export function FaceCaptureForm({ token }: { token: string }) {
   const requestId = useKycStore((s) => s.requestId);
   const compare = useGuardianCompare();
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   // requestId 없으면 처음부터
   useEffect(() => {
@@ -50,11 +51,12 @@ export function FaceCaptureForm({ token }: { token: string }) {
           router.push(`/verify/${token}/done`);
         },
         onError: (err) => {
+          setRetryKey((k) => k + 1); // 카메라 재마운트
           if (err instanceof ApiError) {
-            alert(`${err.code}: ${err.problem.detail}`);
-          } else {
-            alert('알 수 없는 오류가 발생했어요.');
+            alert(err.problem.detail);
+            return;
           }
+          alert('알 수 없는 오류가 발생했어요.');
         },
       },
     );
@@ -76,6 +78,7 @@ export function FaceCaptureForm({ token }: { token: string }) {
           </div>
         ) : (
           <Webcam
+            key={retryKey}
             ref={webcamRef}
             audio={false}
             screenshotFormat="image/jpeg"

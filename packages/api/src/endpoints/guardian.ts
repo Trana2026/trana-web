@@ -1,6 +1,6 @@
 import { request } from '../client';
 
-export type IdType = 'ID_CARD' | 'DRIVER_LICENSE' | 'PASSPORT' | 'ALIEN_REGISTRATION';
+export type IdType = 'ID_CARD' | 'DRIVER_LICENSE' | 'ALIEN_REGISTRATION';
 export type Gender = 'MALE' | 'FEMALE';
 
 export type OcrResult = {
@@ -34,14 +34,22 @@ export const guardian = {
     });
   },
 
-  /** Step 2 — 진위확인 */
+  /** Step 2 — 신분증 OCR 이미지 프리뷰 (마스킹된 PNG blob) */
+  getIdCardImage: (params: { requestId: string; token: string }): Promise<Blob> =>
+    request<Blob>('/v1/identity/guardian/id-card/image', {
+      method: 'GET',
+      query: { requestId: params.requestId, token: params.token },
+      responseType: 'blob',
+    }),
+
+  /** Step 3 — 진위확인 */
   verify: (params: { requestId: string; token: string }): Promise<VerifyIdCardResponse> =>
     request<VerifyIdCardResponse>('/v1/identity/guardian/verify-id-card', {
       method: 'POST',
       body: params,
     }),
 
-  /** Step 3 — 셀카 비교 + 가입 확정 */
+  /** Step 4 — 셀카 비교 + 가입 확정 */
   compare: (params: {
     token: string;
     requestId: string;

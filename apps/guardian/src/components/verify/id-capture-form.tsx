@@ -20,6 +20,7 @@ export function IdCaptureForm({ token }: { token: string }) {
   const ocr = useGuardianOcr();
   const setOcr = useKycStore((s) => s.setOcr);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   const handleCapture = useCallback(() => {
     const webcam = webcamRef.current;
@@ -44,6 +45,7 @@ export function IdCaptureForm({ token }: { token: string }) {
           router.push(`/verify/${token}/personal-info`);
         },
         onError: (err) => {
+          setRetryKey((k) => k + 1); // ← 카메라 재마운트
           if (err instanceof ApiError) {
             alert(`${err.code}: ${err.problem.detail}`);
           } else {
@@ -64,6 +66,7 @@ export function IdCaptureForm({ token }: { token: string }) {
             </div>
           ) : (
             <Webcam
+              key={retryKey}
               ref={webcamRef}
               audio={false}
               screenshotFormat="image/jpeg"

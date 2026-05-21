@@ -4,7 +4,7 @@ import { IsometricGrid } from '@/components/hero/isometric-grid';
 
 export default function HeroLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-background relative overflow-x-clip">
+    <div className="bg-background relative overflow-hidden">
       <BackgroundGlow />
       <IsometricGrid />
       <GridMask />
