@@ -6,7 +6,10 @@ import { useCallback, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 
 import { LoadingModal } from '@/components/loading-modal';
+import { cropVideoToAspect } from '@/lib/canvas-crop';
 import { useKycStore } from '@/store/kyc';
+
+const BOX_ASPECT = 335 / 212;
 
 const VIDEO_CONSTRAINTS = {
   facingMode: { ideal: 'environment' },
@@ -22,20 +25,24 @@ export function IdCaptureForm({ token }: { token: string }) {
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
 
-  const handleCapture = useCallback(() => {
+  const handleCapture = useCallback(async () => {
     const webcam = webcamRef.current;
-    if (!webcam) return;
-
-    const screenshot = webcam.getScreenshot();
-    if (!screenshot) {
+    const video = webcam?.video;
+    if (!webcam || !video) {
       setCameraError('촬영에 실패했어요. 다시 시도해 주세요.');
       return;
     }
 
-    // 카메라 즉시 정지
-    webcam.stream?.getTracks().forEach((track) => track.stop());
+    let file: File;
+    try {
+      file = await cropVideoToAspect(video, BOX_ASPECT, 'id-card.jpg');
+    } catch {
+      setCameraError('촬영에 실패했어요. 다시 시도해 주세요.');
+      return;
+    }
 
-    const file = dataUrlToFile(screenshot, 'id-card.jpg');
+    // crop 끝난 뒤 stream stop (drawImage 가 video 를 읽어야 하므로 순서 중요)
+    webcam.stream?.getTracks().forEach((track) => track.stop());
 
     ocr.mutate(
       { token, file },
@@ -45,7 +52,7 @@ export function IdCaptureForm({ token }: { token: string }) {
           router.push(`/verify/${token}/personal-info`);
         },
         onError: (err) => {
-          setRetryKey((k) => k + 1); // ← 카메라 재마운트
+          setRetryKey((k) => k + 1);
           if (err instanceof ApiError) {
             alert(`${err.code}: ${err.problem.detail}`);
           } else {
@@ -103,13 +110,4 @@ export function IdCaptureForm({ token }: { token: string }) {
       <LoadingModal open={ocr.isPending} title="신분증 확인 중" />
     </>
   );
-}
-
-function dataUrlToFile(dataUrl: string, filename: string): File {
-  const [header, base64 = ''] = dataUrl.split(',');
-  const mime = /:(.*?);/.exec(header ?? '')?.[1] ?? 'image/jpeg';
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  return new File([bytes], filename, { type: mime });
 }
