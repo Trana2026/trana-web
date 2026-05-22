@@ -21,10 +21,6 @@ const TILES: readonly Tile[] = [
 
 const ISO_TRANSFORM = 'matrix(0.91, -0.41, 0.93, 0.37, 0, 0)';
 
-const TILE_BG = 'rgba(64, 197, 114, 0.15)';
-const TILE_SHADOW =
-  'inset 0 4px 20.2px rgba(242, 255, 235, 0.8), inset 8px -12px 9.9px rgba(227, 255, 247, 0.2)';
-const ACCENT_BG = '#40C572';
 const ACCENT_SHADOW =
   'inset 1px -10px 40px rgba(221, 230, 255, 0.6), inset 0 4px 40px rgba(194, 255, 243, 0.8)';
 
@@ -38,10 +34,8 @@ export function IsometricGrid() {
           style={{
             left: `calc(50% + ${tile.x - FIGMA_CENTER_X}px)`,
             top: tile.y,
-            background: tile.accent ? ACCENT_BG : TILE_BG,
-            boxShadow: tile.accent
-              ? `${ACCENT_SHADOW}, inset 8px -12px 9.9px rgba(227, 255, 247, 0.2)`
-              : TILE_SHADOW,
+            background: tile.accent ? 'var(--iso-accent-bg)' : 'var(--iso-tile-bg)',
+            boxShadow: tile.accent ? ACCENT_SHADOW : 'var(--iso-tile-shadow)',
             transform: ISO_TRANSFORM,
             transformOrigin: '0 0',
           }}
