@@ -1,5 +1,6 @@
 'use client';
 
+import { toast } from '@trana/ui/components/sonner';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -8,12 +9,22 @@ import { LoadingModal } from '@/components/loading-modal';
 export default function FaceCaptureDemoPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [hasErrored, setHasErrored] = useState(false);
 
   const handleCapture = () => {
+    toast.dismiss();
+    const wasErrored = hasErrored;
+    setHasErrored(false);
     setLoading(true);
     setTimeout(() => {
-      router.push('/demo/done');
-    }, 2000);
+      setLoading(false);
+      if (!wasErrored) {
+        setHasErrored(true);
+        toast.error('인식에 실패했어요. 다시 진행해주세요');
+      } else {
+        router.push('/demo/done');
+      }
+    }, 1000);
   };
 
   return (
@@ -26,7 +37,11 @@ export default function FaceCaptureDemoPage() {
       </div>
 
       {/* 원형 얼굴 viewport */}
-      <div className="border-primary bg-card relative mx-auto mt-[73px] size-[260px] overflow-hidden rounded-full border-[7px] drop-shadow-xl">
+      <div
+        className={`bg-card relative mx-auto mt-[73px] size-[260px] overflow-hidden rounded-full border-[7px] drop-shadow-xl ${
+          hasErrored ? 'border-error-500' : 'border-primary'
+        }`}
+      >
         <div className="text-caption-m text-muted-foreground flex h-full items-center justify-center">
           데모 — 카메라 영역
         </div>
@@ -49,7 +64,7 @@ export default function FaceCaptureDemoPage() {
         </button>
       </div>
 
-      <LoadingModal open={loading} title="얼굴 확인 중" />
+      <LoadingModal open={loading} title="얼굴을 확인 중이에요" eta="3초 / 10초 예상" />
     </div>
   );
 }

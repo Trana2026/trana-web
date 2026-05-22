@@ -1,5 +1,6 @@
 'use client';
 
+import { toast } from '@trana/ui/components/sonner';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -8,12 +9,22 @@ import { LoadingModal } from '@/components/loading-modal';
 export default function IdCaptureDemoPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [hasErrored, setHasErrored] = useState(false);
 
   const handleCapture = () => {
+    toast.dismiss();
+    const wasErrored = hasErrored;
+    setHasErrored(false); // 클릭 시 일단 primary 로 복귀
     setLoading(true);
     setTimeout(() => {
-      router.push('/demo/personal-info');
-    }, 2000);
+      setLoading(false);
+      if (!wasErrored) {
+        setHasErrored(true);
+        toast.error('인식에 실패했어요. 다시 촬영해주세요');
+      } else {
+        router.push('/demo/personal-info');
+      }
+    }, 1000);
   };
 
   return (
@@ -26,7 +37,11 @@ export default function IdCaptureDemoPage() {
       </div>
 
       <div className="mt-[75px] flex flex-col items-center gap-5">
-        <div className="bg-card border-primary relative aspect-[335/212] w-full overflow-hidden rounded-[20px] border">
+        <div
+          className={`bg-card relative aspect-[335/212] w-full overflow-hidden rounded-[20px] border ${
+            hasErrored ? 'border-error-500' : 'border-primary'
+          }`}
+        >
           <div className="text-caption-m text-muted-foreground flex h-full items-center justify-center">
             데모 — 카메라 미리보기 영역
           </div>
@@ -48,12 +63,12 @@ export default function IdCaptureDemoPage() {
         type="button"
         onClick={handleCapture}
         disabled={loading}
-        className="bg-primary text-primary-foreground rounded-button text-body-l-sb mt-auto inline-flex w-full items-center justify-center px-5 py-3.5 disabled:opacity-50"
+        className="bg-primary text-primary-foreground rounded-button text-body-l-sb mt-[190px] inline-flex w-full items-center justify-center px-5 py-3.5 disabled:opacity-50"
       >
         촬영하기
       </button>
 
-      <LoadingModal open={loading} title="신분증 확인 중" />
+      <LoadingModal open={loading} title="신분증을 확인 중이에요" eta="3초 / 10초 예상" />
     </div>
   );
 }

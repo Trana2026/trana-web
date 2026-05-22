@@ -1,6 +1,7 @@
 'use client';
 
-import { ApiError, useGuardianOcr } from '@trana/api';
+import { useGuardianOcr } from '@trana/api';
+import { toast } from '@trana/ui/components/sonner';
 import { useRouter } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
@@ -26,6 +27,7 @@ export function IdCaptureForm({ token }: { token: string }) {
   const [retryKey, setRetryKey] = useState(0);
 
   const handleCapture = useCallback(async () => {
+    toast.dismiss();
     const webcam = webcamRef.current;
     const video = webcam?.video;
     if (!webcam || !video) {
@@ -53,11 +55,8 @@ export function IdCaptureForm({ token }: { token: string }) {
         },
         onError: (err) => {
           setRetryKey((k) => k + 1);
-          if (err instanceof ApiError) {
-            alert(`${err.code}: ${err.problem.detail}`);
-          } else {
-            alert('알 수 없는 오류가 발생했어요.');
-          }
+          console.error('[ocr]', err);
+          toast.error('인식에 실패했어요. 다시 촬영해주세요');
         },
       },
     );
@@ -66,7 +65,11 @@ export function IdCaptureForm({ token }: { token: string }) {
   return (
     <>
       <div className="mt-[75px] flex flex-col items-center gap-5">
-        <div className="bg-card border-primary relative aspect-[335/212] w-full overflow-hidden rounded-[20px] border">
+        <div
+          className={`bg-card relative aspect-[335/212] w-full overflow-hidden rounded-[20px] border ${
+            ocr.isError ? 'border-error-500' : 'border-primary'
+          }`}
+        >
           {cameraError ? (
             <div className="flex h-full items-center justify-center px-4 text-center">
               <span className="text-caption-m text-error-500">{cameraError}</span>

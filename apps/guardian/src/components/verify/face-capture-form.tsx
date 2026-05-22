@@ -1,6 +1,7 @@
 'use client';
 
-import { ApiError, useGuardianCompare } from '@trana/api';
+import { useGuardianCompare } from '@trana/api';
+import { toast } from '@trana/ui/components/sonner';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
@@ -30,6 +31,7 @@ export function FaceCaptureForm({ token }: { token: string }) {
   }, [requestId, router, token]);
 
   const handleCapture = useCallback(() => {
+    toast.dismiss();
     if (!requestId) return;
     const webcam = webcamRef.current;
     if (!webcam) return;
@@ -51,12 +53,9 @@ export function FaceCaptureForm({ token }: { token: string }) {
           router.push(`/verify/${token}/done`);
         },
         onError: (err) => {
-          setRetryKey((k) => k + 1); // 카메라 재마운트
-          if (err instanceof ApiError) {
-            alert(err.problem.detail);
-            return;
-          }
-          alert('알 수 없는 오류가 발생했어요.');
+          setRetryKey((k) => k + 1);
+          console.error('[compare]', err);
+          toast.error('얼굴 인증에 실패했어요. 다시 시도해 주세요');
         },
       },
     );
@@ -67,7 +66,11 @@ export function FaceCaptureForm({ token }: { token: string }) {
   return (
     <>
       {/* 원형 얼굴 viewport */}
-      <div className="border-primary bg-card relative mx-auto mt-[73px] size-[260px] overflow-hidden rounded-full border-[7px] drop-shadow-xl">
+      <div
+        className={`bg-card relative mx-auto mt-[73px] size-[260px] overflow-hidden rounded-full border-[7px] drop-shadow-xl ${
+          compare.isError ? 'border-error-500' : 'border-primary'
+        }`}
+      >
         {cameraError ? (
           <div className="flex h-full items-center justify-center px-4 text-center">
             <span className="text-caption-m text-error-500">{cameraError}</span>

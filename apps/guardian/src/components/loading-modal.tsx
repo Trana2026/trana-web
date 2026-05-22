@@ -4,12 +4,14 @@ type Props = {
   open: boolean;
   title?: string;
   description?: string;
+  eta?: string;
 };
 
 export function LoadingModal({
   open,
   title = '로딩 중이에요',
   description = '잠시만 기다려주세요',
+  eta,
 }: Props) {
   if (!open) return null;
 
@@ -29,6 +31,11 @@ export function LoadingModal({
           <div className="grid size-[60px] place-items-center">
             <div className="border-primary size-10 animate-spin rounded-full border-4 border-t-transparent" />
           </div>
+          {eta && (
+            <div className="rounded-xl bg-neutral-100 px-3 py-2">
+              <span className="text-body-m text-muted-foreground">{eta}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
