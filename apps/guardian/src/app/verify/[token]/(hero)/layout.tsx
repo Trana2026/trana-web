@@ -11,7 +11,7 @@ export default function HeroLayout({ children }: { children: React.ReactNode }) 
       <div
         className="relative mx-auto flex max-w-[480px] flex-col"
         style={{
-          minHeight: 'max(100dvh, 812px)',
+          minHeight: 'max(100dvh, 762px)',
           paddingTop: 'var(--safe-area-inset-top)',
         }}
       >

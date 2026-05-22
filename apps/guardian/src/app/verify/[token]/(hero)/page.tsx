@@ -63,22 +63,11 @@ export default async function HeroPage({ params }: { params: Promise<{ token: st
         className="bg-primary text-primary-foreground rounded-button text-body-l-sb absolute flex h-[52px] w-[335px] -translate-x-1/2 items-center justify-center"
         style={{
           left: '50%',
-          bottom: 58,
+          bottom: 45,
         }}
       >
         본인 인증하여 시작하기
       </Link>
-
-      {/* 보조 링크 */}
-      <div
-        className="text-caption-b text-muted-foreground absolute -translate-x-1/2"
-        style={{
-          left: '50%',
-          bottom: 28,
-        }}
-      >
-        이미 계정이 있으신가요?
-      </div>
     </>
   );
 }
