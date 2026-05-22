@@ -1,9 +1,12 @@
 import '@trana/ui/globals.css';
 
 import { ApiProvider } from '@trana/api';
+import { Toaster } from '@trana/ui/components/sonner';
 import type { Metadata, Viewport } from 'next';
+import { ThemeProvider } from 'next-themes';
 
 import { ExternalBrowserGate } from '@/components/external-browser-gate';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export const metadata: Metadata = {
   title: 'TRANA 보호자 인증',
@@ -24,7 +27,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" suppressHydrationWarning>
       <body className="antialiased" suppressHydrationWarning>
         <ApiProvider>
-          <ExternalBrowserGate>{children}</ExternalBrowserGate>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ExternalBrowserGate>{children}</ExternalBrowserGate>
+            <ThemeToggle />
+            <Toaster />
+          </ThemeProvider>
         </ApiProvider>
       </body>
     </html>
