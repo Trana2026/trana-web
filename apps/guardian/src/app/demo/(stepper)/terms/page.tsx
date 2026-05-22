@@ -72,7 +72,7 @@ export default function TermsDemoPage() {
             onClick={handleSubmit}
             className={`rounded-button text-body-l-sb w-full px-5 py-3.5 transition-colors ${
               disabled
-                ? 'cursor-not-allowed bg-neutral-50 text-neutral-300'
+                ? 'cursor-not-allowed bg-neutral-50 text-neutral-300 dark:bg-neutral-600 dark:text-neutral-500'
                 : 'bg-primary text-primary-foreground'
             }`}
           >
