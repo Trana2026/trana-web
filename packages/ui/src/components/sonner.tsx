@@ -2,10 +2,23 @@
 
 import { CircleCheckIcon, InfoIcon, Loader2Icon, TriangleAlertIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useEffect } from 'react';
 import { toast, Toaster as Sonner, type ToasterProps } from 'sonner';
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = 'system' } = useTheme();
+
+  // sonner 2.x 는 toast options 에 onClick 미지원 → DOM 위임으로 click-to-dismiss
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('[data-sonner-toast]')) {
+        toast.dismiss();
+      }
+    };
+    document.addEventListener('click', handler);
+    return () => document.removeEventListener('click', handler);
+  }, []);
 
   return (
     <Sonner
@@ -23,8 +36,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         unstyled: true,
         classNames: {
-          toast:
-            'flex w-full max-w-[335px] h-12 items-center gap-2 rounded-[16px] px-4 py-3 backdrop-blur-md',
+          toast: 'flex w-full h-12 items-center gap-2 rounded-[16px] px-4 py-3 backdrop-blur-md',
           error: 'bg-error-soft text-error-500',
           title: 'text-body-m',
           icon: 'shrink-0',
