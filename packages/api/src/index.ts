@@ -1,12 +1,19 @@
+import { contract } from '@trana/api/endpoints/contract';
+
 import { guardian } from './endpoints/guardian';
 import { terms } from './endpoints/terms';
 
 export const api = {
   terms,
   guardian,
+  contract,
 } as const;
 
 // 타입 / 에러 re-export
+export type {
+  ApproveContractGuardianConsentRequest,
+  ContractGuardianConsentApprovedResponse,
+} from './endpoints/contract';
 export type {
   FaceCompareResponse,
   Gender,
@@ -25,6 +32,7 @@ export type {
 export { ApiError, type ErrorHint, type ProblemDetail } from './types';
 
 // Hooks
+export { useApproveContractGuardianConsent } from './hooks/contract';
 export {
   useGuardianCompare,
   useGuardianIdCardImage,
