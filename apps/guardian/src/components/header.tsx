@@ -25,15 +25,28 @@ function BackIcon() {
   );
 }
 
-export function VerifyHeader() {
+type Props = {
+  /** 헤더 가운데 라벨. 미지정 시 기본값. */
+  title?: string;
+  /** 진행도(0~100). 미지정 시 pathname 기반 verify 진행도 사용. */
+  percent?: number;
+  /** 뒤로가기 숨김. 미지정 시 pathname 기반. */
+  hideBack?: boolean;
+};
+
+export function AppHeader({ title, percent, hideBack }: Props) {
   const pathname = usePathname();
   const router = useRouter();
-  const { percent, hideBack } = getVerifyRouteInfo(pathname);
+  const fallback = getVerifyRouteInfo(pathname);
+
+  const resolvedPercent = percent ?? fallback.percent;
+  const resolvedHideBack = hideBack ?? fallback.hideBack;
+  const resolvedTitle = title ?? '본인 인증';
 
   return (
     <header className="bg-background">
       <div className="relative flex h-6 items-center px-4">
-        {!hideBack && (
+        {!resolvedHideBack && (
           <button
             type="button"
             aria-label="뒤로가기"
@@ -44,13 +57,13 @@ export function VerifyHeader() {
           </button>
         )}
         <h1 className="text-body-l-b text-foreground absolute left-1/2 -translate-x-1/2">
-          본인 인증
+          {resolvedTitle}
         </h1>
       </div>
       <div className="mt-4 h-1 w-full">
         <div
           className="bg-primary h-full transition-[width] duration-300 ease-out"
-          style={{ width: `${percent}%` }}
+          style={{ width: `${resolvedPercent}%` }}
         />
       </div>
     </header>
