@@ -1,19 +1,12 @@
 import { api } from '@trana/api';
-import { notFound } from 'next/navigation';
 
 import { ContractConsentForm } from '@/components/contract/contract-consent-form';
 import { AppHeader } from '@/components/header';
 
-type SearchParams = Promise<{ token?: string; openExternalBrowser?: string }>;
+type Params = Promise<{ token: string }>;
 
-export default async function ContractConsentPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const { token } = await searchParams;
-  if (!token) notFound();
-
+export default async function ContractConsentPage({ params }: { params: Params }) {
+  const { token } = await params;
   const terms = await api.terms.list();
 
   return (
@@ -46,7 +39,7 @@ export default async function ContractConsentPage({
             ))}
           </div>
 
-          {/* footer form (Frame 128) — mt-auto 로 하단 고정 */}
+          {/* footer form */}
           <div className="mt-auto">
             <ContractConsentForm token={token} />
           </div>

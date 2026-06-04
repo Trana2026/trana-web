@@ -20,7 +20,7 @@ export function ContractConsentForm({ token }: Props) {
       { token },
       {
         onSuccess: () => {
-          router.push('/contract/done');
+          router.push(`/contract/${token}/done`);
         },
         onError: (err) => {
           // 410 GUARDIAN_CONSENT_LINK_INVALID — 토큰 사용/만료
