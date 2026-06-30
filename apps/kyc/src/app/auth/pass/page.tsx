@@ -26,8 +26,6 @@ export default function AuthPassPage() {
     setReady(true);
 
     window.onMokResult = (payload: string) => {
-      console.log('[MOK payload]', payload);
-
       let res: SignupPayload;
       try {
         res = JSON.parse(payload);
@@ -46,7 +44,7 @@ export default function AuthPassPage() {
         if (window.flutter_inappwebview) {
           window.flutter_inappwebview.callHandler('onPassResult', res);
         } else {
-          toast.error('이 화면은 앱 안에서만 동작해요.');
+          toast.info('[테스트] 본인확인 응답을 정상 수신했어요. 실제 처리는 앱에서 진행됩니다.');
         }
         return;
       }
