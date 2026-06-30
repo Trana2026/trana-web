@@ -2,7 +2,7 @@
 
 import { toast } from '@trana/ui/components/sonner';
 import Script from 'next/script';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 type SignupPayload = {
   resultCode?: string;
@@ -19,6 +19,7 @@ type SignupPayload = {
 export default function AuthPassPage() {
   const [signupSessionId, setSignupSessionId] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const [sdkReady, setSdkReady] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -58,7 +59,7 @@ export default function AuthPassPage() {
     };
   }, []);
 
-  const handleStart = () => {
+  const handleStart = useCallback(() => {
     if (!signupSessionId) {
       toast.error('signupSessionId 가 없어요.');
       return;
@@ -71,35 +72,48 @@ export default function AuthPassPage() {
     const url = `${apiBase}/v1/identity/pass/req-client-info?signupSessionId=${encodeURIComponent(signupSessionId)}`;
     const device = window.flutter_inappwebview ? 'MWV' : 'MB';
     window.MOBILEOK.process(url, device, 'onMokResult');
-  };
+  }, [signupSessionId]);
+
+  useEffect(() => {
+    if (!sdkReady || !signupSessionId) return;
+    if (typeof window === 'undefined') return;
+    if (window.flutter_inappwebview) {
+      handleStart();
+    }
+  }, [sdkReady, signupSessionId, handleStart]);
 
   if (!ready) return null;
 
+  const isFlutter = typeof window !== 'undefined' && !!window.flutter_inappwebview;
+
   return (
     <>
-      <Script src={process.env.NEXT_PUBLIC_MOBILE_OK_SCRIPT} strategy="afterInteractive" />
+      <Script
+        src={process.env.NEXT_PUBLIC_MOBILE_OK_SCRIPT}
+        strategy="afterInteractive"
+        onReady={() => setSdkReady(true)}
+      />
       <div className="bg-background min-h-dvh">
         <div className="mx-auto flex min-h-dvh max-w-[480px] flex-col items-center justify-center gap-6 px-5">
           <div className="flex flex-col items-center gap-1.5 text-center">
             <h1 className="text-header-s-b text-foreground">본인 인증</h1>
             <p className="text-body-m text-muted-foreground">
-              안전한 가입을 위해 본인 인증이 필요해요.
+              {isFlutter
+                ? '본인 인증을 준비하고 있어요...'
+                : '안전한 가입을 위해 본인 인증이 필요해요.'}
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={handleStart}
-            disabled={!signupSessionId}
-            className="rounded-button text-body-l-sb w-full px-5 py-3.5 transition-colors disabled:cursor-not-allowed disabled:bg-neutral-50 disabled:text-neutral-300 dark:disabled:bg-neutral-600 dark:disabled:text-neutral-500"
-            style={
-              !signupSessionId
-                ? undefined
-                : { backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }
-            }
-          >
-            본인 인증 시작하기
-          </button>
+          {!isFlutter && (
+            <button
+              type="button"
+              onClick={handleStart}
+              disabled={!signupSessionId}
+              className="bg-primary text-primary-foreground rounded-button text-body-l-sb w-full px-5 py-3.5 transition-colors disabled:cursor-not-allowed disabled:bg-neutral-50 disabled:text-neutral-300 dark:disabled:bg-neutral-600 dark:disabled:text-neutral-500"
+            >
+              본인 인증 시작하기
+            </button>
+          )}
         </div>
       </div>
     </>
