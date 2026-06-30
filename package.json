@@ -13,9 +13,9 @@
   },
   "preinstall": "npx only-allow pnpm",
   "lint-staged": {
-    "apps/guardian/**/*.{ts,tsx,js,jsx}": [
+    "apps/kyc/**/*.{ts,tsx,js,jsx}": [
       "prettier --write",
-      "pnpm --filter guardian exec eslint --fix --max-warnings 0"
+      "pnpm --filter kyc exec eslint --fix --max-warnings 0"
     ],
     "packages/ui/**/*.{ts,tsx}": [
       "prettier --write",
