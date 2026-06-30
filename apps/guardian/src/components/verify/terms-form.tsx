@@ -29,8 +29,6 @@ export function TermsForm({ token, termsVersionIds }: Props) {
   useEffect(() => {
     // V3 표준창 callback — SDK 에러, 백엔드 GUARDIAN 응답, ERROR 응답 모두 여기로
     window.onMokResult = (payload: string) => {
-      console.log('[MOK payload]', payload);
-
       let res: MokPayload;
       try {
         res = JSON.parse(payload);
