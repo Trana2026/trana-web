@@ -3,6 +3,7 @@
 import { ApiError, useAgreeConsent } from '@trana/api';
 import { Checkbox } from '@trana/ui/components/checkbox';
 import { toast } from '@trana/ui/components/sonner';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 type Props = {
@@ -10,24 +11,58 @@ type Props = {
   termsVersionIds: number[];
 };
 
+type MokPayload = {
+  resultCode?: string;
+  statusCode?: string;
+  resultMsg?: string;
+  purpose?: string;
+  status?: string;
+  minorPublicCode?: string;
+  code?: string;
+};
+
 export function TermsForm({ token, termsVersionIds }: Props) {
   const [checked, setChecked] = useState(false);
+  const router = useRouter();
   const agree = useAgreeConsent();
 
   useEffect(() => {
-    // 표준창 close/error/팝업차단 callback. 인증 성공은 returnUrl POST 로 처리되어 여기 호출 안 됨.
+    // V3 표준창 callback — SDK 에러, 백엔드 GUARDIAN 응답, ERROR 응답 모두 여기로
     window.onMokResult = (payload: string) => {
+      console.log('[MOK payload]', payload);
+
+      let res: MokPayload;
       try {
-        const res = JSON.parse(payload);
-        toast.error(res.resultMsg ?? '본인확인이 취소되었어요.');
+        res = JSON.parse(payload);
       } catch {
         toast.error('본인확인 결과를 읽지 못했어요.');
+        return;
       }
+
+      const sdkCode = res.resultCode ?? res.statusCode;
+      if (sdkCode && sdkCode !== '2000') {
+        toast.error(res.resultMsg ?? '본인확인이 취소되었어요.');
+        return;
+      }
+
+      if (res.purpose === 'GUARDIAN' && res.status === 'success' && res.minorPublicCode) {
+        router.push(`/pass/result?minorPublicCode=${encodeURIComponent(res.minorPublicCode)}`);
+        return;
+      }
+
+      if (res.purpose === 'ERROR') {
+        router.push(`/pass/error?code=${encodeURIComponent(res.code ?? 'UNKNOWN')}`);
+        return;
+      }
+
+      console.warn('MOK 예상치 못한 payload', res);
+      toast.error('본인확인 결과를 처리하지 못했어요.');
     };
+
     return () => {
       delete window.onMokResult;
     };
-  }, []);
+  }, [router]);
 
   const handleSubmit = () => {
     agree.mutate(

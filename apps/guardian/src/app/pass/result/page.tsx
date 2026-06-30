@@ -4,27 +4,21 @@ import { useEffect, useState } from 'react';
 
 import { AppHeader } from '@/components/header';
 
-type PassResult = {
-  status: 'success' | string | null;
-  minorPublicCode: string | null;
-};
-
 export default function PassResultPage() {
-  const [result, setResult] = useState<PassResult | null>(null);
+  const [minorPublicCode, setMinorPublicCode] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.hash.substring(1));
-    setResult({
-      status: params.get('status'),
-      minorPublicCode: params.get('minorPublicCode'),
-    });
-    // fragment 즉시 제거 — 브라우저 history / referer 노출 차단 (보안 체크리스트)
+    const params = new URLSearchParams(window.location.search);
+    setMinorPublicCode(params.get('minorPublicCode'));
+    setReady(true);
+    // query param 즉시 제거 — referer 노출 차단
     window.history.replaceState(null, '', window.location.pathname);
   }, []);
 
-  if (!result) return null;
+  if (!ready) return null;
 
-  const isSuccess = result.status === 'success';
+  const isSuccess = !!minorPublicCode;
 
   return (
     <div className="bg-background min-h-dvh">
