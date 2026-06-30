@@ -2,8 +2,8 @@
 
 import { ApiError, useAgreeConsent } from '@trana/api';
 import { Checkbox } from '@trana/ui/components/checkbox';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { toast } from '@trana/ui/components/sonner';
+import { useEffect, useState } from 'react';
 
 type Props = {
   token: string;
@@ -12,26 +12,47 @@ type Props = {
 
 export function TermsForm({ token, termsVersionIds }: Props) {
   const [checked, setChecked] = useState(false);
-  const router = useRouter();
   const agree = useAgreeConsent();
+
+  useEffect(() => {
+    // 표준창 close/error/팝업차단 callback. 인증 성공은 returnUrl POST 로 처리되어 여기 호출 안 됨.
+    window.onMokResult = (payload: string) => {
+      try {
+        const res = JSON.parse(payload);
+        toast.error(res.resultMsg ?? '본인확인이 취소되었어요.');
+      } catch {
+        toast.error('본인확인 결과를 읽지 못했어요.');
+      }
+    };
+    return () => {
+      delete window.onMokResult;
+    };
+  }, []);
 
   const handleSubmit = () => {
     agree.mutate(
       {
         termsVersionIds,
-        contextType: 'SIGNUP',
+        contextType: 'GUARDIAN_CONSENT',
         ageGroup: 'ADULT',
         guardianLinkToken: token,
       },
       {
         onSuccess: () => {
-          router.push(`/verify/${token}/id-capture`);
+          if (typeof window === 'undefined' || !window.MOBILEOK) {
+            toast.error('본인확인 모듈이 로드되지 않았어요. 새로고침해주세요.');
+            return;
+          }
+          const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+          const url = `${apiBase}/v1/identity/guardian/pass/req-client-info?token=${encodeURIComponent(token)}`;
+          const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+          window.MOBILEOK.process(url, isMobile ? 'MB' : 'WB', 'onMokResult');
         },
         onError: (err) => {
           if (err instanceof ApiError) {
-            alert(`${err.code}: ${err.message}`);
+            toast.error(`${err.code}: ${err.message}`);
           } else {
-            alert('알 수 없는 오류가 발생했어요.');
+            toast.error('약관 동의 중 오류가 발생했어요.');
           }
         },
       },
@@ -61,7 +82,7 @@ export function TermsForm({ token, termsVersionIds }: Props) {
             : 'bg-primary text-primary-foreground'
         }`}
       >
-        {agree.isPending ? '전송 중...' : '본인 인증 시작하기'}
+        {agree.isPending ? '잠시만요...' : '본인 인증 시작하기'}
       </button>
     </div>
   );
